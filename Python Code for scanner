@@ -1,0 +1,31 @@
+import hashlib
+
+def calculate_hash(file_path):
+    """Calculates the SHA-256 hash of a file."""
+    hasher = hashlib.sha256()
+    with open(file_path, 'rb') as file:
+        while True:
+            chunk = file.read(4096)
+            if not chunk:
+                break
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+def scan_file(file_path, known_malware_hashes):
+    """Checks if a file's hash matches any known malware hashes."""
+    file_hash = calculate_hash(file_path)
+    if file_hash in known_malware_hashes:
+        return True  # File is infected
+    return False
+
+# Example usage
+known_malware_hashes = [
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",  # Empty file
+    # Add more known malware hashes here
+]
+
+file_to_scan = "/home/kali/example_file"
+if scan_file(file_to_scan, known_malware_hashes):
+    print("Malware detected!")
+else:
+    print("File is clean.")
